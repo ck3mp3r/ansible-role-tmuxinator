@@ -1,0 +1,31 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  vars:
+    user: root
+  tasks:
+  - name: Stat ~{{ user }}/.tmux
+    stat:
+      path: ~{{ user }}/.tmux
+    register: tmux_exists
+
+  - assert:
+      that: tmux_exists.stat.exists
+
+  - name: Stat ~{{ user }}/.tmux/plugins/tpm
+    stat:
+      path: ~{{ user }}/.tmux/plugins/tpm
+    register: tpm_exists
+
+  - assert:
+      that: tpm_exists.stat.exists
+
+  - name: Stat ~{{ user }}/.config/tmuxinator
+    stat:
+      path: ~{{ user }}/.config/tmuxinator
+    register: config_exists
+
+  - assert:
+      that: config_exists.stat.exists

@@ -1,0 +1,48 @@
+---
+- name: Install tmux - (Darwin)
+  homebrew:
+    package:
+      - tmux
+      - tmuxinator
+      - reattach-to-user-namespace
+    state: present
+  when: ansible_os_family | lower == 'darwin'
+
+- name: Tmux-inator - (Debian|RedHat)
+  block:
+    - name: Install tmux
+      package:
+        name:
+          - tmux
+        state: present
+      become: true
+    - name: Install tmuxinator
+      gem:
+        name: tmuxinator
+        user_install: false
+        install_dir: ~{{ user }}/.gem
+  when: ansible_os_family | lower in ['debian', 'redhat']
+
+- name: Check if tmuxinator plugin manager is installed.
+  stat:
+    path: ~{{ user }}/.tmux/plugins/tpm
+  register: tpm_installed
+
+- name: Create tmux plugin directory
+  file:
+    state: directory
+    path: ~{{ user }}/.tmux/plugins
+    mode: '0755'
+
+- name: Install tmuxinator plugin manager...
+  git:
+    repo: 'https://github.com/tmux-plugins/tpm'
+    version: 'v3.0.0'
+    dest: ~{{ user }}/.tmux/plugins/tpm
+  when: not tpm_installed.stat.exists
+
+- name: Create ~/.config/tmuxinator directory
+  file:
+    path: ~{{ user }}/.config/tmuxinator
+    state: directory
+    mode: '0755'
