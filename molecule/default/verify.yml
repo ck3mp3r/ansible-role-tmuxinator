@@ -11,7 +11,8 @@
       path: ~{{ user }}/.tmux
     register: tmux_exists
 
-  - assert:
+  - name: Asserting that ~{{ user }}/.tmux exists
+    assert:
       that: tmux_exists.stat.exists
 
   - name: Stat ~{{ user }}/.tmux/plugins/tpm
@@ -19,7 +20,8 @@
       path: ~{{ user }}/.tmux/plugins/tpm
     register: tpm_exists
 
-  - assert:
+  - name: Asserting that ~{{ user }}/.tmux/plugins/tpm exists
+    assert:
       that: tpm_exists.stat.exists
 
   - name: Stat ~{{ user }}/.config/tmuxinator
@@ -27,5 +29,6 @@
       path: ~{{ user }}/.config/tmuxinator
     register: config_exists
 
-  - assert:
+  - name: Asserting that ~{{ user }}/.config/tmuxinator exists
+    assert:
       that: config_exists.stat.exists
